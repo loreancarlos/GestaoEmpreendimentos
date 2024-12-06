@@ -9,6 +9,7 @@ export function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
+  console.log(process.env.VITE_API_URL);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,7 @@ export function Login() {
             <Building2 className="h-12 w-12 text-indigo-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Gestão de Loteamentos
+            Gestão de Comissões
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
