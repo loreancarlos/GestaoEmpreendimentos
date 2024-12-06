@@ -10,6 +10,8 @@ export function Login() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   console.log(process.env.APIURL);
+  console.log(process.env.local.APIURL);
+  console.log(APIURL);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
