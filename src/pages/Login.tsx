@@ -9,7 +9,7 @@ export function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
-  console.log(process.env.VITE_API_URL);
+  console.log(process.env.APIURL);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
