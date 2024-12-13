@@ -12,17 +12,18 @@ export function Login() {
   const { login, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
+    // Se o usuário já estiver autenticado, redireciona para a página inicial
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(email, password);
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
+      // Após o login bem-sucedido, o useEffect acima cuidará do redirecionamento
     } catch (err) {
       setError('Credenciais inválidas');
     }
