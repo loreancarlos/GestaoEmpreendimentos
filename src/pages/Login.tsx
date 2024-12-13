@@ -16,8 +16,6 @@ export function Login() {
     if (isAuthenticated) {
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
-    }else{
-       navigate('/', { replace: true });
     }
   }, [isAuthenticated, navigate, location]);
 
