@@ -17,7 +17,7 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rota de login - não requer autenticação */}
+        {/* Public route - Login */}
         <Route
           path="/login"
           element={
@@ -27,17 +27,17 @@ export function App() {
           }
         />
 
-        {/* Rotas protegidas */}
+        {/* Protected routes */}
         <Route
-          path="/"
           element={
             <AuthRoute>
               <Layout />
             </AuthRoute>
           }
         >
+          {/* Default route redirect based on user role */}
           <Route
-            index
+            path="/"
             element={
               user?.role === 'broker' ? (
                 <Navigate to="/commissions" replace />
@@ -47,18 +47,35 @@ export function App() {
             }
           />
 
-          {/* Routes for admin and regular users */}
-          {user?.role !== 'broker' && (
-            <>
-              <Route path="clients" element={<Clients />} />
-              <Route path="developments" element={<Developments />} />
-              <Route path="sales" element={<Sales />} />
-            </>
-          )}
-
-          {/* Route for brokers */}
+          {/* Admin and regular user routes */}
           <Route
-            path="commissions"
+            path="/clients"
+            element={
+              <PrivateRoute requireBroker={false}>
+                <Clients />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/developments"
+            element={
+              <PrivateRoute requireBroker={false}>
+                <Developments />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/sales"
+            element={
+              <PrivateRoute requireBroker={false}>
+                <Sales />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Broker only route */}
+          <Route
+            path="/commissions"
             element={
               <PrivateRoute requireBroker>
                 <Commissions />
@@ -68,7 +85,7 @@ export function App() {
 
           {/* Admin only route */}
           <Route
-            path="users"
+            path="/users"
             element={
               <PrivateRoute requireAdmin>
                 <Users />
@@ -76,6 +93,7 @@ export function App() {
             }
           />
 
+          {/* Catch all route - redirect based on user role */}
           <Route
             path="*"
             element={
