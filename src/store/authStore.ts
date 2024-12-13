@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from '../types';
-import { api } from '../services/api';
+import { AuthService, AuthError } from '../services/authService';
 
 interface AuthState {
   user: User | null;
@@ -20,20 +20,23 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       login: async (email: string, password: string) => {
         try {
-          const { user, token } = await api.login(email, password);
+          const { user, token } = await AuthService.login(email, password);
           set({ user, token, isAuthenticated: true });
         } catch (error) {
-          throw new Error('Invalid credentials');
+          const authError = error as AuthError;
+          throw new Error(authError.message);
         }
       },
       logout: () => {
-        api.clearToken();
         set({ user: null, token: null, isAuthenticated: false });
       },
       changePassword: async (currentPassword: string, newPassword: string) => {
         try {
-          await api.changePassword(currentPassword, newPassword);
+          await AuthService.changePassword(currentPassword, newPassword);
         } catch (error) {
+          if (error instanceof Error) {
+            throw new Error(error.message);
+          }
           throw new Error('Falha ao alterar a senha');
         }
       },
