@@ -1,6 +1,8 @@
 import React from "react";
 import { Sale, User } from "../../types";
 import { Combobox } from "../common/Combobox";
+import { formatDate } from "../../utils/format";
+
 
 interface SaleFormProps {
   formData: {
@@ -146,7 +148,7 @@ export function SaleForm({
         </label>
         <input
           type="date"
-          value={formData.purchaseDate}
+          value={formatDate(formData.purchaseDate)}
           onChange={(e) =>
             setFormData({ ...formData, purchaseDate: e.target.value })
           }
