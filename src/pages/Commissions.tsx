@@ -46,31 +46,32 @@ export function Commissions() {
   }, [user]);
 
   const myCommissions = useMemo(() => {
-    if (!user || !sales.length || !clients.length || !developments.length)
-      return [];
+  if (!user || !sales.length || !clients.length || !developments.length)
+    return [];
 
-    return sales
-      .filter((sale) => sale.brokerId === user.id)
-      .map((sale) => {
-        const client = clients.find((c) => c.id === sale.clientId);
-        const development = developments.find(
-          (d) => d.id === sale.developmentId
-        );
+  return sales
+    .filter((sale) => sale.brokerId === user.id)
+    .map((sale) => {
+      const client = clients.find((c) => c.id === sale.clientId);
+      const development = developments.find(
+        (d) => d.id === sale.developmentId
+      );
 
-        return {
-          id: sale.id,
-          clientName: client?.name || "Cliente não encontrado",
-          developmentName: development?.name || "Empreendimento não encontrado",
-          developmentId: sale.developmentId,
-          blockNumber: sale.blockNumber,
-          lotNumber: sale.lotNumber,
-          totalValue: Number(sale.totalValue) || 0,
-          commissionValue: Number(sale.commissionValue) || 0,
-          status: sale.status,
-          purchaseDate: sale.purchaseDate,
-        };
-      });
-  }, [sales, clients, developments, user]);
+      return {
+        id: sale.id,
+        clientName: client?.name || "Cliente não encontrado",
+        developmentName: development?.name || "Empreendimento não encontrado",
+        developmentId: sale.developmentId,
+        blockNumber: sale.blockNumber,
+        lotNumber: sale.lotNumber,
+        totalValue: Number(sale.totalValue) || 0,
+        commissionValue: Number(sale.commissionValue) || 0,
+        status: sale.status,
+        purchaseDate: sale.purchaseDate,
+        updatedAt: sale.updatedAt,
+      };
+    });
+}, [sales, clients, developments, user]);
 
   const filteredCommissions = useMemo(() => {
     return myCommissions.filter((commission) => {
