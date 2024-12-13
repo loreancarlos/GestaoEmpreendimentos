@@ -9,6 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -28,6 +29,13 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         api.clearToken();
         set({ user: null, token: null, isAuthenticated: false });
+      },
+      changePassword: async (currentPassword: string, newPassword: string) => {
+        try {
+          await api.changePassword(currentPassword, newPassword);
+        } catch (error) {
+          throw new Error('Falha ao alterar a senha');
+        }
       },
     }),
     {
