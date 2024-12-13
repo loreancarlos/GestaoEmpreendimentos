@@ -36,7 +36,6 @@ class ApiClient {
 
     if (!response.ok) {
       if (response.status === 401) {
-        // Clear auth state on unauthorized response
         this.clearToken();
         window.location.href = "/login";
         throw new Error("Session expired");
@@ -59,6 +58,13 @@ class ApiClient {
     );
     this.setToken(response.token);
     return response;
+  }
+
+  async changePassword(currentPassword: string, newPassword: string) {
+    return this.request<void>("/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
   }
 
   // Users
@@ -92,93 +98,11 @@ class ApiClient {
     });
   }
 
-  // Clients
-  async getClients() {
-    return this.request<any[]>("/clients");
-  }
-
-  async createClient(data: any) {
-    return this.request<any>("/clients", {
+  async adminResetPassword(userId: string, newPassword: string) {
+    return this.request<void>(`/users/${userId}/reset-password`, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({ newPassword }),
     });
-  }
-
-  async updateClient(id: string, data: any) {
-    return this.request<any>(`/clients/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deleteClient(id: string) {
-    return this.request<void>(`/clients/${id}`, {
-      method: "DELETE",
-    });
-  }
-
-  // Developments
-  async getDevelopments() {
-    return this.request<any[]>("/developments");
-  }
-
-  async createDevelopment(data: any) {
-    return this.request<any>("/developments", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateDevelopment(id: string, data: any) {
-    return this.request<any>(`/developments/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deleteDevelopment(id: string) {
-    return this.request<void>(`/developments/${id}`, {
-      method: "DELETE",
-    });
-  }
-
-  // Sales
-  async getSales() {
-    return this.request<any[]>("/sales");
-  }
-
-  async createSale(data: any) {
-    return this.request<any>("/sales", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateSale(id: string, data: any) {
-    return this.request<any>(`/sales/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deleteSale(id: string) {
-    return this.request<void>(`/sales/${id}`, {
-      method: "DELETE",
-    });
-  }
-
-  async updateInstallmentStatus(
-    saleId: string,
-    installmentNumber: number,
-    data: { billIssued: boolean; billPaid: boolean }
-  ) {
-    return this.request<any>(
-      `/sales/${saleId}/installments/${installmentNumber}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      }
-    );
   }
 }
 
