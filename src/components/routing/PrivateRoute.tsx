@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 
@@ -16,20 +16,25 @@ export function PrivateRoute({
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
 
-  // Se não estiver autenticado, redireciona para o login mantendo a URL original
+  // If not authenticated, redirect to login with return path
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  
-  // Se precisar ser admin e não for, redireciona para a home
+
+  // If admin access is required but user is not admin
   if (requireAdmin && user?.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
-  // Se precisar ser corretor e não for, redireciona para a home
+  // If broker access is required and user is not a broker
   if (requireBroker && user?.role !== 'broker') {
     return <Navigate to="/" replace />;
   }
-  
+
+  // If broker tries to access non-broker routes
+  if (user?.role === 'broker' && !requireBroker) {
+    return <Navigate to="/commissions" replace />;
+  }
+
   return <>{children}</>;
 }
