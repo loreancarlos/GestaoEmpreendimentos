@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Building2, Users, FileText, LogOut, UserCog, DollarSign } from 'lucide-react';
+import { Building2, Users, FileText, LogOut, UserCog, DollarSign, Key } from 'lucide-react';
+import { ChangePasswordModal } from './users/ChangePasswordModal';
 
 export function Layout() {
-  const { user, logout } = useAuthStore();
+  const { user, logout, changePassword } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login', { replace: true });
+  };
+
+  const handleChangePassword = async (currentPassword: string, newPassword: string) => {
+    await changePassword(currentPassword, newPassword);
   };
 
   const isActive = (path: string) =>
@@ -86,8 +92,15 @@ export function Layout() {
                 )}
               </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-gray-700 mr-4">{user?.name}</span>
+             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsChangePasswordModalOpen(true)}
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <Key className="h-4 w-4 mr-1" />
+                Alterar Senha
+              </button>
+              <span className="text-gray-700">{user?.name}</span>
               <button
                 onClick={handleLogout}
                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -103,6 +116,12 @@ export function Layout() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Outlet />
       </main>
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onClose={() => setIsChangePasswordModalOpen(false)}
+        onSubmit={handleChangePassword}
+      />
     </div>
   );
 }
