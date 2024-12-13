@@ -37,13 +37,7 @@ export interface Sale {
   purchaseDate: string;
   commissionValue: number;
   status: 'paid' | 'canceled' | 'waiting_contract' | 'waiting_down_payment' | 'waiting_seven_days' | 'waiting_invoice';
-  installmentStatus?: Array<{
-    installmentNumber: number;
-    dueDate: string;
-    value: number;
-    billIssued: boolean;
-    billPaid: boolean;
-  }>;
+  updatedAt: string;
 }
 
 export interface CalendarCharge {
