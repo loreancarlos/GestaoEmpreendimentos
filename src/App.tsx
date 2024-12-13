@@ -9,6 +9,7 @@ import { Users } from './pages/Users';
 import { Commissions } from './pages/Commissions';
 import { useAuthStore } from './store/authStore';
 import { PrivateRoute } from './components/routing/PrivateRoute';
+import { AuthRoute } from './components/routing/AuthRoute';
 
 export function App() {
   const { user } = useAuthStore();
@@ -16,21 +17,36 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* Rota de login - não requer autenticação */}
+        <Route
+          path="/login"
+          element={
+            <AuthRoute requireAuth={false}>
+              <Login />
+            </AuthRoute>
+          }
+        />
+
+        {/* Rotas protegidas */}
         <Route
           path="/"
           element={
-            <PrivateRoute>
+            <AuthRoute>
               <Layout />
-            </PrivateRoute>
+            </AuthRoute>
           }
         >
-          <Route index element={
-            user?.role === 'broker' 
-              ? <Navigate to="/commissions" replace /> 
-              : <Navigate to="/clients" replace />
-          } />
-          
+          <Route
+            index
+            element={
+              user?.role === 'broker' ? (
+                <Navigate to="/commissions" replace />
+              ) : (
+                <Navigate to="/clients" replace />
+              )
+            }
+          />
+
           {/* Routes for admin and regular users */}
           {user?.role !== 'broker' && (
             <>
@@ -59,12 +75,17 @@ export function App() {
               </PrivateRoute>
             }
           />
-          
-          <Route path="*" element={
-            user?.role === 'broker'
-              ? <Navigate to="/commissions" replace />
-              : <Navigate to="/clients" replace />
-          } />
+
+          <Route
+            path="*"
+            element={
+              user?.role === 'broker' ? (
+                <Navigate to="/commissions" replace />
+              ) : (
+                <Navigate to="/clients" replace />
+              )
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
