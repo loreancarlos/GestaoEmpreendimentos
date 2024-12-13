@@ -11,31 +11,35 @@ interface UserState {
   updateUser: (id: string, user: Partial<User>) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   toggleUserStatus: (id: string) => Promise<void>;
+  adminResetPassword: (userId: string, newPassword: string) => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
   users: [],
   loading: false,
   error: null,
+
   fetchUsers: async () => {
     try {
       set({ loading: true, error: null });
       const users = await api.getUsers();
       set({ users, loading: false });
     } catch (error) {
-      set({ error: "Failed to fetch users", loading: false });
+      set({ error: "Falha ao carregar usuários", loading: false });
     }
   },
+
   addUser: async (userData) => {
     try {
       set({ loading: true, error: null });
       const user = await api.createUser(userData);
       set({ users: [...get().users, user], loading: false });
     } catch (error) {
-      set({ error: "Failed to create user", loading: false });
+      set({ error: "Falha ao criar usuário", loading: false });
       throw error;
     }
   },
+
   updateUser: async (id, userData) => {
     try {
       set({ loading: true, error: null });
@@ -45,21 +49,25 @@ export const useUserStore = create<UserState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      set({ error: "Failed to update user", loading: false });
+      set({ error: "Falha ao atualizar usuário", loading: false });
       throw error;
     }
   },
+
   deleteUser: async (id) => {
     try {
       set({ loading: true, error: null });
       await api.deleteUser(id);
-      const updatedUsers = get().users.filter((user) => user.id !== id);
-      set({ users: updatedUsers, loading: false });
+      set({
+        users: get().users.filter((user) => user.id !== id),
+        loading: false,
+      });
     } catch (error) {
-      set({ error: "Failed to delete user", loading: false });
+      set({ error: "Falha ao excluir usuário", loading: false });
       throw error;
     }
   },
+
   toggleUserStatus: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -69,7 +77,18 @@ export const useUserStore = create<UserState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      set({ error: "Failed to toggle user status", loading: false });
+      set({ error: "Falha ao alterar status do usuário", loading: false });
+      throw error;
+    }
+  },
+
+  adminResetPassword: async (userId: string, newPassword: string) => {
+    try {
+      set({ loading: true, error: null });
+      await api.adminResetPassword(userId, newPassword);
+      set({ loading: false });
+    } catch (error) {
+      set({ error: "Falha ao redefinir senha", loading: false });
       throw error;
     }
   },
