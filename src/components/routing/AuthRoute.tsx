@@ -11,12 +11,12 @@ export function AuthRoute({ children, requireAuth = true }: AuthRouteProps) {
   const { isAuthenticated } = useAuthStore();
   const location = useLocation();
 
-  // Se requer autenticação e usuário não está autenticado
+  // If authentication is required and user is not authenticated
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Se não requer autenticação e usuário está autenticado (ex: página de login)
+  // If authentication is not required and user is authenticated (e.g., login page)
   if (!requireAuth && isAuthenticated) {
     return <Navigate to="/" replace />;
   }
