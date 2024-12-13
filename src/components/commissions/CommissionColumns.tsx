@@ -66,4 +66,9 @@ export const getCommissionColumns = () => [
       );
     },
   },
+  {
+    header: "Última Alteração",
+    accessor: "updatedAt" as const,
+    render: (value: string) => formatDateDisplay(value),
+  },
 ];
